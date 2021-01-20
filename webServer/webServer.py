@@ -35,4 +35,21 @@ def loginPage():
 
 @app.route('/dashboard',methods=['GET'])
 def dashboard():
-    return "Dashboard"
+    return render_template("dashboard.html")
+
+@app.route('/notification',methods=['GET','POST'])
+def notification():
+    if request.method == 'GET':
+        mycursor.execute("SELECT email FROM notification")
+        emails = mycursor.fetchall()
+        return render_template('notification.html',emails = emails)
+    if request.method == 'POST':
+        user_email = request.form["email"]
+        query = "INSERT INTO notification values(%s)"
+        mycursor.execute(query,[user_email])
+        mydb.commit()
+        return '<script>alert("Email Added successfully"); location.replace("/notification");</script>'
+
+@app.route('/testnotification',methods=['GET'])
+def testNotification():
+    return "Testing notification"

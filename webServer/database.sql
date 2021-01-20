@@ -6,3 +6,9 @@ create table login(
 );
 
 insert into login values('deepak','joshi');
+
+create table notification(
+    email VARCHAR(100) PRIMARY KEY
+) ;
+
+insert into notification values('joshideepak4598@gmail.com');
