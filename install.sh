@@ -8,3 +8,4 @@ GRANT ALL PRIVILEGES ON *.* TO 'deepak'@'%';
 FLUSH PRIVILEGES;
 
 pip3 install mysql-connector-python
+pip3 install Flask-Mail

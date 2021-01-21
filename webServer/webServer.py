@@ -1,4 +1,5 @@
 from flask import Flask, render_template , redirect ,request
+from flask_mail import Message , Mail
 import mysql.connector
 
 mydb = mysql.connector.connect(
@@ -11,6 +12,15 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 app = Flask(__name__)
+app.config.update(
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=587,
+    MAIL_USE_TLS = True,
+    MAIL_USERNAME = 'drashtimonitoringtool@gmail.com',
+    MAIL_PASSWORD = ''
+)
+mail = Mail(app)
+mail.init_app(app)
 
 @app.route('/')
 def root():
@@ -50,6 +60,16 @@ def notification():
         mydb.commit()
         return '<script>alert("Email Added successfully"); location.replace("/notification");</script>'
 
+def sendMail(recipients,html):
+    msg = Message("Hello",sender="drashtimonitoringtool@gmail.com",recipients=recipients)
+    msg.html = html
+    mail.send(msg)
+
 @app.route('/testnotification',methods=['GET'])
 def testNotification():
-    return "Testing notification"
+    mycursor.execute("SELECT email FROM notification")
+    emails = mycursor.fetchall()
+    recipients = [email[0] for email in emails ]
+    html = "<h1>This is test notification</h1>"
+    sendMail(recipients,html)
+    return "Message Sent"
