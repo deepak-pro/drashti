@@ -12,3 +12,8 @@ create table notification(
 ) ;
 
 insert into notification values('joshideepak4598@gmail.com');
+
+CREATE TABLE nodes(
+    ip VARCHAR(16) PRIMARY KEY,
+    known INTEGER DEFAULT 0
+);

@@ -1,6 +1,7 @@
 from flask import Flask, render_template , redirect ,request
 from flask_mail import Message , Mail
 import mysql.connector
+import os
 
 mydb = mysql.connector.connect(
   host="172.16.72.3",
@@ -73,3 +74,14 @@ def testNotification():
     html = "<h1>This is test notification</h1>"
     sendMail(recipients,html)
     return "Message Sent"
+
+@app.route('/scanNetwork',methods=['GET'])
+def scanNetwork():
+    networkPrefix = "192.168.1."
+    nodes = []
+    for i in range(1,11):
+        ip = networkPrefix + str(i)
+        isup = True if os.system("ping -c 1 " + ip + " -W 100 > /dev/null" ) == 0 else False
+        if isup:
+            nodes.append(ip)
+    return str(nodes)
