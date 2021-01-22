@@ -4,9 +4,9 @@ import mysql.connector
 import os
 
 mydb = mysql.connector.connect(
-  host="172.16.72.3",
-  user="deepak",
-  password="forth",
+  host="127.0.0.1",
+  user="root",
+  password="",
   database="drashti"
 )
 
@@ -75,13 +75,20 @@ def testNotification():
     sendMail(recipients,html)
     return "Message Sent"
 
-@app.route('/scanNetwork',methods=['GET'])
-def scanNetwork():
-    networkPrefix = "192.168.1."
-    nodes = []
-    for i in range(1,11):
-        ip = networkPrefix + str(i)
-        isup = True if os.system("ping -c 1 " + ip + " -W 100 > /dev/null" ) == 0 else False
-        if isup:
-            nodes.append(ip)
-    return str(nodes)
+@app.route('/scannetwork',methods = ['GET'])
+def scannetwork():
+    return render_template('scannetwork.html')
+
+@app.route('/scanip/<ip>',methods=['GET'])
+def scanip(ip):
+    return "1" if os.system("ping -c 1 " + ip + " -W 1000 > /dev/null" ) == 0 else "0"
+    
+@app.route('/addip/<ip>/<name>', methods=['GET'])
+def addip(ip,name):
+    query = 'INSERT INTO nodes values(%s,%s)'
+    try:
+        mycursor.execute(query,[name,ip])
+        mydb.commit()
+    except:
+        return "0"
+    return "1"
