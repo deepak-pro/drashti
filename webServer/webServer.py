@@ -1,7 +1,8 @@
-from flask import Flask, render_template , redirect ,request
+from flask import Flask, render_template , redirect ,request , abort , request , jsonify
 from flask_mail import Message , Mail
 import mysql.connector
 import os
+from subprocess import Popen, TimeoutExpired, PIPE
 
 mydb = mysql.connector.connect(
   host="127.0.0.1",
@@ -81,7 +82,20 @@ def scannetwork():
 
 @app.route('/scanip/<ip>',methods=['GET'])
 def scanip(ip):
-    return "1" if os.system("ping -c 1 " + ip + " -W 1000 > /dev/null" ) == 0 else "0"
+    cmd = "ping -c 1 " + ip + " -W 1000 > /dev/null"
+    #return "1" if os.system(cmd) == 0 else "0"
+    proc = Popen(cmd,stdout=PIPE,stderr=PIPE,shell=True)
+    try:
+        outs,errs = proc.communicate(timeout=1)
+    except TimeoutExpired:
+        print("🚫 " + ip + " is down")
+        proc.kill()
+        return "0"
+    if errs:
+        print("🚫there is an error")
+        return "0"
+    print("✅ " + ip + " is up")
+    return "1"
     
 @app.route('/addip/<ip>/<name>', methods=['GET'])
 def addip(ip,name):

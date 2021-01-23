@@ -11,12 +11,28 @@ function scan(){
     }
 }
 
+function scan1(){
+    document.getElementById("ips").innerHTML = ""
+    var prefix = "scanip/192.168.1."
+    urls = [] ;
+    for(var i=1;i<=10;++i){
+        urls.push(prefix+i)
+    }
+    console.log(urls)
+    Promise.all(urls.map(u=>fetch(u))).then(response =>
+        Promise.all(response.map(res => res.text()))
+    ).then(texts => {
+        console.log(texts)
+    })
+}
+
 function addip(ip){
     console.log("Adding ip " + ip)
     title = prompt("Please enter a name for this host") ;
     fetch('addip/'+ip+ '/' + title)
         .then(response => response.text())
         .then((response) => {
+            console.log("Recieved response "+ response)
             if(response == 1)
                 console.log(ip + " added successfully")
             else
