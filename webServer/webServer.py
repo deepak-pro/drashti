@@ -3,6 +3,7 @@ from flask_mail import Message , Mail
 import mysql.connector
 import os
 from subprocess import Popen, TimeoutExpired, PIPE
+import json
 
 mydb = mysql.connector.connect(
   host="127.0.0.1",
@@ -76,6 +77,31 @@ def testNotification():
     sendMail(recipients,html)
     return "Message Sent"
 
+@app.route('/nodes',methods=['GET'])
+def nodes():
+    toReturn = []
+    mycursor.execute("SELECT * FROM nodes")
+    row_headers = [x[0] for x in mycursor.description]
+    data = mycursor.fetchall()
+    for result in data:
+        toReturn.append(dict(zip(row_headers,result)))
+    return jsonify(toReturn)
+
+@app.route('/servers',methods=['GET'])
+def servers():
+    toReturn = []
+    mycursor.execute("SELECT * FROM servers")
+    row_headers = [x[0] for x in mycursor.description]
+    data = mycursor.fetchall()
+    for result in data:
+        toReturn.append(dict(zip(row_headers,result)))
+    return jsonify(toReturn)
+    
+
+@app.route('/shownodes',methods=['GET'])
+def shownodes():
+    return render_template('shownodes.html')
+
 @app.route('/scannetwork',methods = ['GET'])
 def scannetwork():
     return render_template('scannetwork.html')
@@ -106,3 +132,7 @@ def addip(ip,name):
     except:
         return "0"
     return "1"
+
+@app.route('/showserver',methods=['GET'])
+def showserverstatus():
+    return render_template('showserver.html')

@@ -17,3 +17,9 @@ CREATE TABLE nodes(
     name VARCHAR(20),
     ip VARCHAR(16) PRIMARY KEY
 );
+
+CREATE TABLE servers(
+    status VARCHAR(10),
+    name VARCHAR(20),
+    ip VARCHAR(16) PRIMARY KEY
+);
