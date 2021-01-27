@@ -6,7 +6,7 @@ function scan(){
     document.getElementById("ips").innerHTML = ""
     var prefix = "192.168.1."
     var i ;
-    for (i=1; i<=10 ;++i){
+    for (i=1; i<=21 ;++i){
         check(prefix+i)
     }
 }
@@ -15,7 +15,7 @@ function scan1(){
     document.getElementById("ips").innerHTML = ""
     var prefix = "scanip/192.168.1."
     urls = [] ;
-    for(var i=1;i<=10;++i){
+    for(var i=1;i<=22;++i){
         urls.push(prefix+i)
     }
     console.log(urls)

@@ -149,3 +149,15 @@ def addserver(ip):
         return "0"
     return "1"
 
+@app.route('/removeserver/<ip>',methods=['GET'])
+def removeserver(ip):
+    query = 'UPDATE nodes set server=0 where ip=%s'
+    try:
+        mycursor.execute(query,[ip])
+        print("✅ Removed ",ip," from server")
+        mydb.commit()
+    except mysql.connector.Error as err:
+        print("🚫",err)
+        return "0"
+    return "1"
+
