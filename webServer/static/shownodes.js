@@ -3,6 +3,8 @@ window.onload = function load(){
     fetchNodes();
 }
 
+
+
 function addToServer(ip){
     console.log("Adding " + ip + " to server list")
     fetch('/addserver/'+ip)

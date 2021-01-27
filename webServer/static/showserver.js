@@ -1,6 +1,22 @@
 window.onload = function load(){
     console.log("hello");
     fetchServers();
+    socketRun();
+}
+
+function socketRun(){
+	var socket = io.connect('http://127.0.0.1:4000');
+
+    socket.on('connect', function() {
+        console.log("Socket is connected");
+        socket.send("User has connected");
+        socket.send("run")
+    });
+
+    socket.on('message',function(msg){
+        console.log("Message Recieved:" + msg)
+    });
+
 }
 
 function removeserver(ip){
