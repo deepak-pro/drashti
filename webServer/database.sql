@@ -15,11 +15,8 @@ insert into notification values('joshideepak4598@gmail.com');
 
 CREATE TABLE nodes(
     name VARCHAR(20),
-    ip VARCHAR(16) PRIMARY KEY
-);
-
-CREATE TABLE servers(
-    status VARCHAR(10),
-    name VARCHAR(20),
-    ip VARCHAR(16) PRIMARY KEY
+    ip VARCHAR(16) PRIMARY KEY,
+    description VARCHAR(200),
+    server VARCHAR(1) DEFAULT '0',
+    status VARCHAR(1) DEFAULT '0'
 );

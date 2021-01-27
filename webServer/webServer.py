@@ -90,7 +90,7 @@ def nodes():
 @app.route('/servers',methods=['GET'])
 def servers():
     toReturn = []
-    mycursor.execute("SELECT * FROM servers")
+    mycursor.execute("SELECT * FROM nodes where server=1")
     row_headers = [x[0] for x in mycursor.description]
     data = mycursor.fetchall()
     for result in data:
@@ -101,6 +101,10 @@ def servers():
 @app.route('/shownodes',methods=['GET'])
 def shownodes():
     return render_template('shownodes.html')
+
+@app.route('/showserver',methods=['GET'])
+def showserverstatus():
+    return render_template('showserver.html')
 
 @app.route('/scannetwork',methods = ['GET'])
 def scannetwork():
@@ -123,16 +127,25 @@ def scanip(ip):
     print("✅ " + ip + " is up")
     return "1"
     
-@app.route('/addip/<ip>/<name>', methods=['GET'])
-def addip(ip,name):
-    query = 'INSERT INTO nodes values(%s,%s)'
+@app.route('/addip/<ip>/<name>/<des>', methods=['GET'])
+def addip(ip,name,des):
+    query = 'INSERT INTO nodes (name,ip,description) values(%s,%s,%s)'
     try:
-        mycursor.execute(query,[name,ip])
+        mycursor.execute(query,[name,ip,des])
         mydb.commit()
     except:
         return "0"
     return "1"
 
-@app.route('/showserver',methods=['GET'])
-def showserverstatus():
-    return render_template('showserver.html')
+@app.route('/addserver/<ip>',methods=['GET'])
+def addserver(ip):
+    query = 'UPDATE nodes set server=1 where ip=%s'
+    try:
+        mycursor.execute(query,[ip])
+        print("✅ Added to Server")
+        mydb.commit()
+    except mysql.connector.Error as err:
+        print("🚫",err)
+        return "0"
+    return "1"
+

@@ -29,14 +29,20 @@ function scan1(){
 function addip(ip){
     console.log("Adding ip " + ip)
     title = prompt("Please enter a name for this host") ;
-    fetch('addip/'+ip+ '/' + title)
+    des = prompt("Please enter a short description") ;
+    fetch('addip/'+ip+ '/' + title + '/' + des)
         .then(response => response.text())
         .then((response) => {
             console.log("Recieved response "+ response)
-            if(response == 1)
+            if(response == 1){
                 console.log(ip + " added successfully")
-            else
+                alert("Record Added Successfully")
+            }
+            else{
                 console.log(ip + " already exists")
+                alert("This host is already added, Click on nodes settings to change")
+            }
+                
         }).catch(err => console.log(err))
 }
 
