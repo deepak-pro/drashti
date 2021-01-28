@@ -1,7 +1,7 @@
 window.onload = function load(){
-    console.log("hello");
+    console.log("Show Server");
     fetchServers();
-    socketRun();
+    setInterval(fetchServers,5000);
 }
 
 function socketRun(){
@@ -10,11 +10,12 @@ function socketRun(){
     socket.on('connect', function() {
         console.log("Socket is connected");
         socket.send("User has connected");
-        socket.send("run")
+        //socket.send("run")
     });
 
     socket.on('message',function(msg){
-        console.log("Message Recieved:" + msg)
+        //console.log("Message Recieved:" + msg)
+        document.getElementById('m').innerHTML += msg + "<br>"
     });
 
 }
@@ -26,23 +27,25 @@ function removeserver(ip){
         .then((response) => {
             console.log("Recieved response "+ response)
             if(response == 1){
-                console.log(ip + " removed from server")
-                //alert("Server Added Successfully")
+                //console.log(ip + " removed from server")
+                alert("Removed from server")
             }
             else{
-                console.log(ip + " does not exists")
-                //alert("This host is already added to server")
+                //console.log(ip + " does not exists")
+                alert("This ip does not exists in server list")
             }
                 
         }).catch(err => console.log(err))
+    fetchServers();
 }
 
 function fetchServers(){
+    var ele = document.getElementById("show")
     fetch('/servers')
         .then(response => response.text())
         .then((response) => {
-            console.log("Recieved response "+ response)
-            var ele = document.getElementById("show")
+            //console.log("Recieved response "+ response)
+            ele.innerHTML = ""
             var txt = "<table border='1'><tr><th>Status</th><th>Name</th><th>IP</th><th>Description</th></tr>"
             obj = JSON.parse(response)
             for(x in obj){

@@ -10,7 +10,7 @@ function getInfo(){
             if(data.status == 'success'){
                 document.getElementById('info').innerHTML = "Cannot Query Wan IP"
             }
-            console.log(data)
+            //console.log(data)
             var txt = ""
             txt += "Wan IP : " + data.query + "<br>"
             txt += "Location : " + data.city + " , " + data.regionName + " , " + data.country + "<br>"

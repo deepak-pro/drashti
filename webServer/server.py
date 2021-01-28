@@ -5,10 +5,25 @@ import sys
 import asyncio
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send ,emit
+import mysql.connector
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 app.config["CACHE_TYPE"] = "null"
+
+mydb = mysql.connector.connect(
+  host="127.0.0.1",
+  user="root",
+  password="",
+  database="drashti"
+)
+
+mycursor = mydb.cursor()
+
+up = []
+down = []
+
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -25,16 +40,32 @@ def scanip(ip):
     return "1"
 
 def runI():
-    up = []
-    down = []
-    for i in range(11):
-        if scanip('192.168.1.'+str(i)) == "1":
-            up.append('192.168.1.'+str(i))
+    time.sleep(10)
+    global up
+    global down
+    global mycursor
+    newUp = []
+    newDown = []
+
+    mycursor.execute("SELECT ip FROM nodes")
+    result = mycursor.fetchall()
+    mycursor.close()
+    mycursor = mydb.cursor() 
+    result = [x[0] for x in result]
+    print(result)
+    for ip in result:
+        if scanip(ip) == "1":
+            newUp.append(ip)
         else:
-            down.append('192.168.1.'+str(i))
-    print("✅",up)
-    print("🚫",down)
-    emit('message','up and down')
+            newDown.append(ip)
+    print("✅",newUp)
+    print("🚫",newDown)
+    if(newUp != up or newDown != down):
+        print("📲 Status is changed")
+        emit('message','change',broadcast=True)
+
+    up = newUp
+    down = newDown
 
 def checkServerStatus():
 	print("Checking Server Status")
@@ -43,7 +74,8 @@ def checkServerStatus():
 def handleMessage(msg):
      print("Message Received : ",msg)
      if msg == 'run':
-         runI()
+         while True:
+             runI()
 
 @app.route('/',methods=['GET'])
 def index():
@@ -51,4 +83,4 @@ def index():
 
 
 if __name__ == '__main__':
-	socketio.run(app,port=4000)
+    socketio.run(app,port=4000)

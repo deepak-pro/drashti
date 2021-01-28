@@ -5,16 +5,11 @@ import os
 from subprocess import Popen, TimeoutExpired, PIPE
 import json
 
-mydb = mysql.connector.connect(
-  host="127.0.0.1",
-  user="root",
-  password="",
-  database="drashti"
-)
-
-mycursor = mydb.cursor()
+#mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+#mycursor = mydb.cursor()
 
 app = Flask(__name__)
+app.config["CACHE_TYPE"] = "null"
 app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
@@ -35,6 +30,8 @@ def waninfo():
 
 @app.route('/login', methods= ['GET','POST'])
 def loginPage():
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     if request.method == 'GET':
         return render_template("login.html")
     if request.method == 'POST':
@@ -48,6 +45,7 @@ def loginPage():
             return redirect('/dashboard',code=302)
         else:
             return '<script>alert("Invalid login"); location.replace("/");</script>'
+    mydb.close()
             
 
 @app.route('/dashboard',methods=['GET'])
@@ -56,15 +54,19 @@ def dashboard():
 
 @app.route('/notification',methods=['GET','POST'])
 def notification():
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     if request.method == 'GET':
         mycursor.execute("SELECT email FROM notification")
         emails = mycursor.fetchall()
+        mydb.close()
         return render_template('notification.html',emails = emails)
     if request.method == 'POST':
         user_email = request.form["email"]
         query = "INSERT INTO notification values(%s)"
         mycursor.execute(query,[user_email])
         mydb.commit()
+        mydb.close()
         return '<script>alert("Email Added successfully"); location.replace("/notification");</script>'
 
 def sendMail(recipients,html):
@@ -74,8 +76,11 @@ def sendMail(recipients,html):
 
 @app.route('/testnotification',methods=['GET'])
 def testNotification():
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     mycursor.execute("SELECT email FROM notification")
     emails = mycursor.fetchall()
+    mydb.close()
     recipients = [email[0] for email in emails ]
     html = "<h1>This is test notification</h1>"
     sendMail(recipients,html)
@@ -84,19 +89,25 @@ def testNotification():
 @app.route('/nodes',methods=['GET'])
 def nodes():
     toReturn = []
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM nodes")
     row_headers = [x[0] for x in mycursor.description]
     data = mycursor.fetchall()
+    mydb.close()
     for result in data:
         toReturn.append(dict(zip(row_headers,result)))
     return jsonify(toReturn)
 
 @app.route('/servers',methods=['GET'])
 def servers():
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     toReturn = []
     mycursor.execute("SELECT * FROM nodes where server=1")
     row_headers = [x[0] for x in mycursor.description]
     data = mycursor.fetchall()
+    mydb.close()
     for result in data:
         toReturn.append(dict(zip(row_headers,result)))
     return jsonify(toReturn)
@@ -122,46 +133,58 @@ def scanip(ip):
     try:
         outs,errs = proc.communicate(timeout=1)
     except TimeoutExpired:
-        print("🚫 " + ip + " is down")
+        #print("🚫 " + ip + " is down")
         proc.kill()
         return "0"
     if errs:
         print("🚫there is an error")
         return "0"
-    print("✅ " + ip + " is up")
+    #print("✅ " + ip + " is up")
     return "1"
     
 @app.route('/addip/<ip>/<name>/<des>', methods=['GET'])
 def addip(ip,name,des):
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     query = 'INSERT INTO nodes (name,ip,description) values(%s,%s,%s)'
     try:
         mycursor.execute(query,[name,ip,des])
         mydb.commit()
+        mydb.close()
     except:
         return "0"
+        mydb.close()
     return "1"
 
 @app.route('/addserver/<ip>',methods=['GET'])
 def addserver(ip):
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     query = 'UPDATE nodes set server=1 where ip=%s'
     try:
         mycursor.execute(query,[ip])
-        print("✅ Added to Server")
+        #print("✅ Added to Server")
         mydb.commit()
+        mydb.close()
     except mysql.connector.Error as err:
-        print("🚫",err)
+        #print("🚫",err)
         return "0"
+        mydb.close()
     return "1"
 
 @app.route('/removeserver/<ip>',methods=['GET'])
 def removeserver(ip):
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
     query = 'UPDATE nodes set server=0 where ip=%s'
     try:
         mycursor.execute(query,[ip])
-        print("✅ Removed ",ip," from server")
+        #print("✅ Removed ",ip," from server")
         mydb.commit()
+        mydb.close()
     except mysql.connector.Error as err:
-        print("🚫",err)
+        #print("🚫",err)
+        mydb.close()
         return "0"
     return "1"
 
