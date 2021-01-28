@@ -1,5 +1,6 @@
 window.onload = function load(){
     console.log("hello");
+    scan();
 }
 
 function scan(){

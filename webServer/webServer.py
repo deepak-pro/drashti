@@ -29,6 +29,10 @@ mail.init_app(app)
 def root():
     return redirect('/login',code=302)
 
+@app.route('/waninfo')
+def waninfo():
+    return render_template('waninfo.html')
+
 @app.route('/login', methods= ['GET','POST'])
 def loginPage():
     if request.method == 'GET':
