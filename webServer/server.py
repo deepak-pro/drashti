@@ -33,7 +33,7 @@ def changeStatus(status,ip):
     mydb.close()
 
 def runI():
-    time.sleep(5)
+    time.sleep(1)
 
     global up
     global down

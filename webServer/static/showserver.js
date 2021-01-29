@@ -1,7 +1,7 @@
 window.onload = function load(){
     console.log("Show Server");
     fetchServers();
-    setInterval(fetchServers,5000);
+    setInterval(fetchServers,1000);
 }
 
 function socketRun(){

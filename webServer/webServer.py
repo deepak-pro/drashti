@@ -152,8 +152,8 @@ def addip(ip,name,des):
         mydb.commit()
         mydb.close()
     except:
-        return "0"
         mydb.close()
+        return "0"
     return "1"
 
 @app.route('/addserver/<ip>',methods=['GET'])
