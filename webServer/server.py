@@ -18,11 +18,11 @@ def scanip(ip):
         return "0"
     return "1"
 
-def changeStatus(ip,status):
+def changeStatus(status,ip):
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
 
-    query = 'UPDATE nodes set server=%s where ip=%s'
+    query = 'UPDATE nodes set status=%s where ip=%s'
     try:
         mycursor.execute(query,[status,ip])
     except:
@@ -33,7 +33,7 @@ def changeStatus(ip,status):
     mydb.close()
 
 def runI():
-    time.sleep(2)
+    time.sleep(5)
 
     global up
     global down
@@ -67,6 +67,12 @@ def runI():
         newDownIps = [ip for ip in newDown if ip not in down]
         print("New up ip are ", newUpIps)
         print("New down ip are ",newDownIps)
+        if newUpIps:
+            for ip in newUpIps:
+                changeStatus(1,ip)
+        if newDownIps:
+            for ip in newDownIps:
+                changeStatus(0,ip)
 
     up = newUp
     down = newDown
