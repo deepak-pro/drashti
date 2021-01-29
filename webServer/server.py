@@ -1,37 +1,16 @@
 import time
-from subprocess import Popen, TimeoutExpired, PIPE
 import os
-import sys
-import asyncio
-from flask import Flask, render_template
-from flask_socketio import SocketIO, send ,emit
 import mysql.connector
-
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret'
-app.config["CACHE_TYPE"] = "null"
-
-mydb = mysql.connector.connect(
-  host="127.0.0.1",
-  user="root",
-  password="",
-  database="drashti"
-)
-
-mycursor = mydb.cursor()
+from subprocess import Popen, TimeoutExpired, PIPE
 
 up = []
 down = []
-
-
-socketio = SocketIO(app, cors_allowed_origins="*")
 
 def scanip(ip):
     cmd = "ping -c 1 " + ip + " -W 1000 > /dev/null"
     proc = Popen(cmd,stdout=PIPE,stderr=PIPE,shell=True)
     try:
-        outs,errs = proc.communicate(timeout=1)
+        _,errs = proc.communicate(timeout=1)
     except TimeoutExpired:
         proc.kill()
         return "0"
@@ -39,48 +18,61 @@ def scanip(ip):
         return "0"
     return "1"
 
+def changeStatus(ip,status):
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+
+    query = 'UPDATE nodes set server=%s where ip=%s'
+    try:
+        mycursor.execute(query,[status,ip])
+    except:
+        print("Error updating data.")
+    print("Record updated")
+
+    mydb.commit()
+    mydb.close()
+
 def runI():
-    time.sleep(10)
+    time.sleep(2)
+
     global up
     global down
-    global mycursor
+
     newUp = []
     newDown = []
+
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
 
     mycursor.execute("SELECT ip FROM nodes")
     result = mycursor.fetchall()
     mycursor.close()
-    mycursor = mydb.cursor() 
+    mycursor = mydb.cursor()
+    mydb.close()
+
     result = [x[0] for x in result]
-    print(result)
+    print("Checking ",result)
     for ip in result:
         if scanip(ip) == "1":
             newUp.append(ip)
         else:
             newDown.append(ip)
+    
     print("✅",newUp)
     print("🚫",newDown)
+
     if(newUp != up or newDown != down):
         print("📲 Status is changed")
-        emit('message','change',broadcast=True)
+        newUpIps = [ip for ip in newUp if ip not in up]
+        newDownIps = [ip for ip in newDown if ip not in down]
+        print("New up ip are ", newUpIps)
+        print("New down ip are ",newDownIps)
 
     up = newUp
     down = newDown
 
-def checkServerStatus():
-	print("Checking Server Status")
-
-@socketio.on('message')
-def handleMessage(msg):
-     print("Message Received : ",msg)
-     if msg == 'run':
-         while True:
-             runI()
-
-@app.route('/',methods=['GET'])
-def index():
-	return render_template('index.html')
-
 
 if __name__ == '__main__':
-    socketio.run(app,port=4000)
+    print("Running Program...")
+    while True:
+        runI()

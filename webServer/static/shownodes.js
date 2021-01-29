@@ -44,7 +44,7 @@ function fetchNodes(){
     fetch('/nodes')
         .then(response => response.text())
         .then((response) => {
-            console.log("Recieved response "+ response)
+            //console.log("Recieved response "+ response)
             ele.innerHTML = ""
             var txt = "<table border='1'><tr><th>Name</th><th>IP</th><th>Description</th></tr>"
             obj = JSON.parse(response)
