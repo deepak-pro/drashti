@@ -188,3 +188,17 @@ def removeserver(ip):
         return "0"
     return "1"
 
+@app.route('/removenode/<ip>',methods=['GET'])
+def removenode(ip):
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    query = "DELETE FROM nodes WHERE ip=%s"
+    try:
+        mycursor.execute(query,[ip])
+        mydb.commit()
+        mydb.close()
+    except mysql.connector.Error as err:
+        print("Error ", err)
+        return "0"
+    return "1"
+

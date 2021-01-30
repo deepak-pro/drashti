@@ -20,6 +20,18 @@ function socketRun(){
 
 }
 
+function removeNode(ip){
+    console.log("Removing node "+ ip)
+    fetch('/removenode/'+ip)
+        .then(response => response.text())
+        .then((response) => {
+            if(response == "1"){
+                alert("Node Removed : "+ip)
+            }else{
+                alert("Error removing node")
+            }
+        })
+}
 
 function addToServer(ip){
     console.log("Adding " + ip + " to server list")
@@ -27,7 +39,7 @@ function addToServer(ip){
         .then(response => response.text())
         .then((response) => {
             console.log("Recieved response "+ response)
-            if(response == 1){
+            if(response == "1"){
                 //console.log(ip + " added to server successfully")
                 alert("Server Added Successfully")
             }
@@ -52,7 +64,7 @@ function fetchNodes(){
                 var st = "🔴"
                 if(obj[x].status == "1")
                     st = "🟢"
-                txt += "<tr><td>" + st + "</td><td>" +obj[x].name + "</td><td>" + obj[x].ip + "</td><td>" + obj[x].description + "</td><td><input type='button' value='Add to Server' onclick=addToServer('" + obj[x].ip + "')></td></tr>";
+                txt += "<tr><td>" + st + "</td><td>" +obj[x].name + "</td><td>" + obj[x].ip + "</td><td>" + obj[x].description + "</td><td><input type='button' value='Add to Server' onclick=addToServer('" + obj[x].ip + "')></td>" + "</td><td><input type='button' value='Remove Node' onclick=removeNode('" + obj[x].ip + "')></td>" + "</tr>";
             }
             txt += "</table>"
             ele.innerHTML = txt
