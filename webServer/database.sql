@@ -20,3 +20,8 @@ CREATE TABLE nodes(
     server VARCHAR(1) DEFAULT '0',
     status VARCHAR(1) DEFAULT '0'
 );
+
+CREATE TABLE logs(
+    username VARCHAR(20),
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

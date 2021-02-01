@@ -28,6 +28,16 @@ def root():
 def waninfo():
     return render_template('waninfo.html')
 
+def loguser(username):
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+
+    query = "INSERT INTO logs (username) values(%s)"
+    mycursor.execute(query,[username])
+    mydb.commit()
+
+    mydb.close()
+
 @app.route('/login', methods= ['GET','POST'])
 def loginPage():
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
@@ -42,6 +52,7 @@ def loginPage():
         user_password = request.form["password"]
 
         if username == user_username and password == user_password:
+            loguser(username)
             return redirect('/dashboard',code=302)
         else:
             return '<script>alert("Invalid login"); location.replace("/");</script>'
