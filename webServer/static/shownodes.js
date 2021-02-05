@@ -58,13 +58,18 @@ function fetchNodes(){
         .then((response) => {
             //console.log("Recieved response "+ response)
             ele.innerHTML = ""
-            var txt = "<table border='1'><tr><th>Status</th><th>Name</th><th>IP</th><th>Description</th></tr>"
+            var txt = "<table border='1'><tr><th>Status</th><th>Name</th><th>IP</th><th>Description</th><th>RTT</th></tr>"
             obj = JSON.parse(response)
             for(x in obj){
                 var st = "🔴"
                 if(obj[x].status == "1")
                     st = "🟢"
-                txt += "<tr><td>" + st + "</td><td>" +obj[x].name + "</td><td>" + obj[x].ip + "</td><td>" + obj[x].description + "</td><td><input type='button' value='Add to Server' onclick=addToServer('" + obj[x].ip + "')></td>" + "</td><td><input type='button' value='Remove Node' onclick=removeNode('" + obj[x].ip + "')></td>" + "</tr>";
+                var rtt = ""
+                if(obj[x].rtt == "I")
+                    rtt = "∞"
+                else
+                    rtt = obj[x].rtt
+                txt += "<tr><td>" + st + "</td><td>" +obj[x].name + "</td><td>" + obj[x].ip + "</td><td>" + obj[x].description + "</td><td>" + rtt + "</td><td><input type='button' value='Add to Server' onclick=addToServer('" + obj[x].ip + "')></td>" + "</td><td><input type='button' value='Remove Node' onclick=removeNode('" + obj[x].ip + "')></td>" + "</tr>";
             }
             txt += "</table>"
             ele.innerHTML = txt
