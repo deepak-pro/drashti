@@ -52,7 +52,7 @@ function addToServer(ip){
 }
 
 function fetchNodes(){
-    var ele = document.getElementById("show")
+    var ele = document.getElementById("shownodes")
     fetch('/nodes')
         .then(response => response.text())
         .then((response) => {

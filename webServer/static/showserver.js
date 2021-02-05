@@ -40,7 +40,7 @@ function removeserver(ip){
 }
 
 function fetchServers(){
-    var ele = document.getElementById("show")
+    var ele = document.getElementById("showserver")
     fetch('/servers')
         .then(response => response.text())
         .then((response) => {
