@@ -194,7 +194,7 @@ def removeserver(ip):
         mydb.commit()
         mydb.close()
     except mysql.connector.Error as err:
-        #print("🚫",err)
+        print("🚫",err)
         mydb.close()
         return "0"
     return "1"

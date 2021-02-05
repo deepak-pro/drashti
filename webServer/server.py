@@ -49,15 +49,33 @@ def sendEmail(ip,name):
 
 
 def scanip(ip):
-    cmd = "ping -c 1 " + ip + " -W 1000 > /dev/null"
-    proc = Popen(cmd,stdout=PIPE,stderr=PIPE,shell=True)
+    #cmd = "ping -c 1 " + ip + " -W 1000 > /dev/null"
+    cmd = "ping -c 1 " + ip + " -W 1000 | grep '= ' | cut -d'=' -f2 | cut -d' ' -f2 | cut -d'/' -f1 "
+    proc = Popen(cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,shell=True)
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    toInsert = ""
     try:
-        _,errs = proc.communicate(timeout=1)
+        outs,errs = proc.communicate(timeout=1)
+        outs = outs.replace('\n','')
+        toInsert = outs
+        #print("Latency for ip ", ip , " is ", outs)
     except TimeoutExpired:
         proc.kill()
+        toInsert = "I"
         return "0"
     if errs:
+        toInsert = "I"
         return "0"
+    
+    query = "UPDATE nodes SET rtt=%s where ip=%s"
+    try:
+        mycursor.execute(query,[toInsert,ip])
+    except:
+        print("Error updating rtt")
+
+    mydb.commit()
+    mydb.close()
     return "1"
 
 def changeStatus(status,ip):
