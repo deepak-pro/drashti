@@ -133,17 +133,17 @@ def runI():
         if newDownIps:
             for ip in newDownIps:
                 changeStatus(0,ip)
-                mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
-                mycursor = mydb.cursor()
-                mycursor.execute("SELECT ip,name FROM nodes WHERE server=1 AND status=0")
-                downServers = mycursor.fetchall()
-                mycursor.close()
-                mycursor = mydb.cursor()
-                mydb.close()
+            mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+            mycursor = mydb.cursor()
+            mycursor.execute("SELECT ip,name FROM nodes WHERE server=1 AND status=0")
+            downServers = mycursor.fetchall()
+            mycursor.close()
+            mycursor = mydb.cursor()
+            mydb.close()
 
-                for record in list(downServers):
-                    if record[0] in newDownIps:
-                        sendEmail(record[0],record[1])
+            for record in list(downServers):
+                if record[0] in newDownIps:
+                    sendEmail(record[0],record[1])
 
 
     up = newUp
@@ -151,6 +151,6 @@ def runI():
 
 
 if __name__ == '__main__':
-    print("Running Program...")
+    print("Starting Infinity Job")
     while True:
         runI()

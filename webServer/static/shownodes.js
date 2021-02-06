@@ -65,7 +65,7 @@ function fetchNodes(){
                 if(obj[x].status == "1")
                     st = "🟢"
                 var rtt = ""
-                if(obj[x].rtt == "I")
+                if(obj[x].status == "0")
                     rtt = "∞"
                 else
                     rtt = obj[x].rtt
