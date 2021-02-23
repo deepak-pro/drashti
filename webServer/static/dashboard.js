@@ -40,8 +40,10 @@ function graph(list) {
         c = []
         var i = 0;
         for (i = 0; i < list.length; ++i) {
+            if(list[i] == "")
+                continue;
             console.log(list[i])
-            obj = { name: list[i], value: 100 }
+            obj = { name: list[i], value: 10000 }
             c.push(obj)
         }
 
@@ -56,17 +58,18 @@ function graph(list) {
                 name: "Router",
                 children: c
             }
-
         ];
+
+        chart.data = c 
 
         networkSeries.dataFields.value = "value";
         networkSeries.dataFields.name = "name";
         networkSeries.dataFields.children = "children";
-        networkSeries.nodes.template.tooltipText = "{name}:{value}";
+        networkSeries.nodes.template.tooltipText = "{name}";
         networkSeries.nodes.template.fillOpacity = 1;
 
         networkSeries.nodes.template.label.text = "{name}"
-        networkSeries.fontSize = 20;
+        networkSeries.fontSize = 10;
 
         networkSeries.links.template.strokeWidth = 1;
 
