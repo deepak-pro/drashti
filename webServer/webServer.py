@@ -43,7 +43,7 @@ def loginPage():
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     if request.method == 'GET':
-        return render_template("login.html")
+        return render_template("loginn.html")
     if request.method == 'POST':
         mycursor.execute("SELECT username,password FROM login")
         result = mycursor.fetchone()
@@ -128,6 +128,10 @@ def servers():
 @app.route('/shownodes',methods=['GET'])
 def shownodes():
     return render_template('shownodesn.html',titlepath="Nodes")
+
+@app.route('/faq',methods=['GET'])
+def faq():
+    return render_template('faq.html',titlepath="FAQ")
 
 @app.route('/showlogs',methods=['GET'])
 def showlogs():
