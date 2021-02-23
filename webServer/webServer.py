@@ -124,6 +124,19 @@ def servers():
         toReturn.append(dict(zip(row_headers,result)))
     return jsonify(toReturn)
 
+
+@app.route("/getnodes")
+def getnodes():
+    toReturn = ""
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM nodes")
+    data = mycursor.fetchall()
+    mydb.close()
+    for result in data:
+        toReturn = toReturn + ";" + result[0]
+    return str(toReturn)
+
 @app.route('/stats')
 def stats():
     toReturn = ""
