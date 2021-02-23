@@ -71,7 +71,7 @@ def notification():
         mycursor.execute("SELECT email FROM notification")
         emails = mycursor.fetchall()
         mydb.close()
-        return render_template('notificationn.html',emails = emails,titlepath="Wan Info")
+        return render_template('notificationn.html',emails = emails,titlepath="Notifications")
     if request.method == 'POST':
         user_email = request.form["email"]
         query = "INSERT INTO notification values(%s)"

@@ -26,7 +26,7 @@ def sendEmail(ip,name):
     sent_from = gmail_user
     to = emails
     subject = name + ' is Down'
-    body = 'You machine : ' + name + " with ip " + ip + " just went down."
+    body = 'Your machine : ' + name + " with ip " + ip + " just went down."
 
     email_text = """\
     From: %s
