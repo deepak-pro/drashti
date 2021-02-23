@@ -15,7 +15,7 @@ app.config.update(
     MAIL_PORT=587,
     MAIL_USE_TLS = True,
     MAIL_USERNAME = 'drashtimonitoringtool@gmail.com',
-    MAIL_PASSWORD = ''
+    MAIL_PASSWORD = 'testPassword'
 )
 mail = Mail(app)
 mail.init_app(app)
@@ -26,7 +26,7 @@ def root():
 
 @app.route('/waninfo')
 def waninfo():
-    return render_template('waninfo.html')
+    return render_template('waninfon.html',titlepath="Wan Info")
 
 def loguser(username):
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
@@ -61,7 +61,7 @@ def loginPage():
 
 @app.route('/dashboard',methods=['GET'])
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboardn.html",titlepath="Dashboard")
 
 @app.route('/notification',methods=['GET','POST'])
 def notification():
@@ -71,7 +71,7 @@ def notification():
         mycursor.execute("SELECT email FROM notification")
         emails = mycursor.fetchall()
         mydb.close()
-        return render_template('notification.html',emails = emails)
+        return render_template('notificationn.html',emails = emails,titlepath="Wan Info")
     if request.method == 'POST':
         user_email = request.form["email"]
         query = "INSERT INTO notification values(%s)"
@@ -87,6 +87,7 @@ def sendMail(recipients,html):
 
 @app.route('/testnotification',methods=['GET'])
 def testNotification():
+    print("Sending email for testing notification")
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     mycursor.execute("SELECT email FROM notification")
@@ -126,15 +127,24 @@ def servers():
 
 @app.route('/shownodes',methods=['GET'])
 def shownodes():
-    return render_template('shownodes.html')
+    return render_template('shownodesn.html',titlepath="Nodes")
+
+@app.route('/showlogs',methods=['GET'])
+def showlogs():
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM logs")
+    logs = mycursor.fetchall()
+    mydb.close()
+    return render_template('showlogsn.html',titlepath="Logs",logs=logs)
 
 @app.route('/showserver',methods=['GET'])
 def showserverstatus():
-    return render_template('showserver.html')
+    return render_template('showservern.html',titlepath="Servers")
 
 @app.route('/scannetwork',methods = ['GET'])
 def scannetwork():
-    return render_template('scannetwork.html')
+    return render_template('scannetworkn.html',titlepath="Scan Network")
 
 @app.route('/scanip/<ip>',methods=['GET'])
 def scanip(ip):
