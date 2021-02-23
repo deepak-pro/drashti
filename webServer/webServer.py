@@ -123,6 +123,37 @@ def servers():
     for result in data:
         toReturn.append(dict(zip(row_headers,result)))
     return jsonify(toReturn)
+
+@app.route('/stats')
+def stats():
+    toReturn = ""
+
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT COUNT(*) FROM nodes")
+    totalNodes = mycursor.fetchall()[0][0]
+    mydb.close()
+
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT COUNT(*) FROM nodes where server=1")
+    totalServers = mycursor.fetchall()[0][0]
+    mydb.close()
+
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT COUNT(*) FROM nodes where server="1" and status="1"')
+    activeServers = mycursor.fetchall()[0][0]
+    mydb.close()
+
+    mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
+    mycursor = mydb.cursor()
+    mycursor.execute('SELECT COUNT(*) FROM nodes where server="1" and status="0"')
+    inactiveServer = mycursor.fetchall()[0][0]
+    mydb.close()
+
+    toReturn = str(totalNodes) + " " + str(totalServers) + " " + str(activeServers) + " " + str(inactiveServer)
+    return str(toReturn)
     
 
 @app.route('/shownodes',methods=['GET'])
