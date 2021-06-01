@@ -11,7 +11,7 @@ create table notification(
     email VARCHAR(100) PRIMARY KEY
 ) ;
 
-insert into notification values('joshideepak4598@gmail.com');
+insert into notification values('test@email.com');
 
 CREATE TABLE nodes(
     name VARCHAR(20),

@@ -5,17 +5,14 @@ import os
 from subprocess import Popen, TimeoutExpired, PIPE
 import json
 
-#mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
-#mycursor = mydb.cursor()
-
 app = Flask(__name__)
 app.config["CACHE_TYPE"] = "null"
 app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
     MAIL_USE_TLS = True,
-    MAIL_USERNAME = 'drashtimonitoringtool@gmail.com',
-    MAIL_PASSWORD = 'testPassword'
+    MAIL_USERNAME = 'sender@email.com',
+    MAIL_PASSWORD = ''
 )
 mail = Mail(app)
 mail.init_app(app)

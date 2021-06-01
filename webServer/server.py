@@ -20,8 +20,8 @@ def sendEmail(ip,name):
     mydb.close()
 
     emails = [email[0] for email in data]
-    gmail_user = 'drashtimonitoringtool@gmail.com'
-    gmail_password = 'testPassword'
+    gmail_user = 'sender@email.com'
+    gmail_password = ''
 
     sent_from = gmail_user
     to = emails
@@ -59,7 +59,6 @@ def scanip(ip):
         outs,errs = proc.communicate(timeout=1)
         outs = outs.replace('\n','')
         toInsert = outs
-        #print("Latency for ip ", ip , " is ", outs)
     except TimeoutExpired:
         proc.kill()
         toInsert = "I"
