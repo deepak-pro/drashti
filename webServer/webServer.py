@@ -1,4 +1,4 @@
-from flask import Flask, render_template , redirect ,request , abort , request , jsonify
+from flask import Flask, render_template , redirect ,request , abort , request , jsonify , session , g
 from flask_mail import Message , Mail
 import mysql.connector
 import os
@@ -7,6 +7,7 @@ import json
 
 app = Flask(__name__)
 app.config["CACHE_TYPE"] = "null"
+app.secret_key = "RandomSecretKey"
 app.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=587,
@@ -23,6 +24,8 @@ def root():
 
 @app.route('/waninfo')
 def waninfo():
+    if not g.user:
+        return redirect('/',code=302)
     return render_template('waninfon.html',titlepath="Wan Info")
 
 def loguser(username):
@@ -35,13 +38,28 @@ def loguser(username):
 
     mydb.close()
 
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user' in session:
+        g.user = session['user']
+
+@app.route('/logout',methods= ['GET'])
+def logout():
+    session.pop('user',None)
+    return redirect('/',code=302)
+
 @app.route('/login', methods= ['GET','POST'])
 def loginPage():
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     if request.method == 'GET':
+        if g.user:
+            print("✅ Already logged in redirecting to dashboard")
+            return redirect('/dashboard',code=302)
         return render_template("loginn.html")
     if request.method == 'POST':
+        session.pop('user',None)
         mycursor.execute("SELECT username,password FROM login")
         result = mycursor.fetchone()
         username,password = result
@@ -49,6 +67,7 @@ def loginPage():
         user_password = request.form["password"]
 
         if username == user_username and password == user_password:
+            session['user'] = user_username
             loguser(username)
             return redirect('/dashboard',code=302)
         else:
@@ -58,10 +77,14 @@ def loginPage():
 
 @app.route('/dashboard',methods=['GET'])
 def dashboard():
+    if not g.user:
+        return redirect('/',code=302)
     return render_template("dashboardn.html",titlepath="Dashboard")
 
 @app.route('/notification',methods=['GET','POST'])
 def notification():
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     if request.method == 'GET':
@@ -78,12 +101,16 @@ def notification():
         return '<script>alert("Email Added successfully"); location.replace("/notification");</script>'
 
 def sendMail(recipients,html):
+    if not g.user:
+        return redirect('/',code=302)
     msg = Message("Hello",sender="drashtimonitoringtool@gmail.com",recipients=recipients)
     msg.html = html
     mail.send(msg)
 
 @app.route('/testnotification',methods=['GET'])
 def testNotification():
+    if not g.user:
+        return redirect('/',code=302)
     print("Sending email for testing notification")
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
@@ -97,6 +124,8 @@ def testNotification():
 
 @app.route('/nodes',methods=['GET'])
 def nodes():
+    if not g.user:
+        return redirect('/',code=302)
     toReturn = []
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
@@ -110,6 +139,8 @@ def nodes():
 
 @app.route('/servers',methods=['GET'])
 def servers():
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     toReturn = []
@@ -124,6 +155,8 @@ def servers():
 
 @app.route("/getnodes")
 def getnodes():
+    if not g.user:
+        return redirect('/',code=302)
     toReturn = ""
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
@@ -136,6 +169,8 @@ def getnodes():
 
 @app.route('/stats')
 def stats():
+    if not g.user:
+        return redirect('/',code=302)
     toReturn = ""
 
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
@@ -168,14 +203,20 @@ def stats():
 
 @app.route('/shownodes',methods=['GET'])
 def shownodes():
+    if not g.user:
+        return redirect('/',code=302)
     return render_template('shownodesn.html',titlepath="Nodes")
 
 @app.route('/faq',methods=['GET'])
 def faq():
+    if not g.user:
+        return redirect('/',code=302)
     return render_template('faq.html',titlepath="FAQ")
 
 @app.route('/showlogs',methods=['GET'])
 def showlogs():
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM logs")
@@ -185,14 +226,20 @@ def showlogs():
 
 @app.route('/showserver',methods=['GET'])
 def showserverstatus():
+    if not g.user:
+        return redirect('/',code=302)
     return render_template('showservern.html',titlepath="Servers")
 
 @app.route('/scannetwork',methods = ['GET'])
 def scannetwork():
+    if not g.user:
+        return redirect('/',code=302)
     return render_template('scannetworkn.html',titlepath="Scan Network")
 
 @app.route('/scanip/<ip>',methods=['GET'])
 def scanip(ip):
+    if not g.user:
+        return redirect('/',code=302)
     cmd = "ping -c 1 " + ip + " -W 1000 > /dev/null"
     #return "1" if os.system(cmd) == 0 else "0"
     proc = Popen(cmd,stdout=PIPE,stderr=PIPE,shell=True)
@@ -210,6 +257,8 @@ def scanip(ip):
     
 @app.route('/addip/<ip>/<name>/<des>', methods=['GET'])
 def addip(ip,name,des):
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     query = 'INSERT INTO nodes (name,ip,description) values(%s,%s,%s)'
@@ -224,6 +273,8 @@ def addip(ip,name,des):
 
 @app.route('/addserver/<ip>',methods=['GET'])
 def addserver(ip):
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     query = 'UPDATE nodes set server=1 where ip=%s'
@@ -240,6 +291,8 @@ def addserver(ip):
 
 @app.route('/removeserver/<ip>',methods=['GET'])
 def removeserver(ip):
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     query = 'UPDATE nodes set server=0 where ip=%s'
@@ -256,6 +309,8 @@ def removeserver(ip):
 
 @app.route('/removenode/<ip>',methods=['GET'])
 def removenode(ip):
+    if not g.user:
+        return redirect('/',code=302)
     mydb = mysql.connector.connect(host="127.0.0.1",user="root",password="",database="drashti")
     mycursor = mydb.cursor()
     query = "DELETE FROM nodes WHERE ip=%s"
