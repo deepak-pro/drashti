@@ -2,7 +2,7 @@
 
 ### A network monitoring tool
 
-![demo](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/Screenshot%202021-02-24%20at%2010.09.49%20AM.png?token=AEZOEVGTBE5K35HCXFZAWSTAYNKEO)
+![demo](assets/Screenshot%202021-02-24%20at%2010.09.49%20AM.png)
 
 ### Abstract
 
@@ -26,7 +26,7 @@ Faulty network devices impact network performance. This can be eliminated throug
 
 1. Active Scan - This feature allows the user to identify all the network devices with easy of clicking on a button. This feature uses ping functionality provided by the operating system to send ICMP packets to all the nodes and receive response. Those devices who reply to the ICMP message are listed to be used on a single page with a button to add a device to the list of known devices calles nodes list.
 
-   ![activeScan](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/Screenshot%202021-02-24%20at%209.42.55%20AM.png?token=AEZOEVEYVCH2DSPUFNCN2YDAYNI3Q)
+   ![activeScan](assets/Screenshot%202021-02-24%20at%209.42.55%20AM.png)
 
 2. Nodes - Nodes This gives list of all the devices that are added after scanning of network with all the following information
 
@@ -42,15 +42,15 @@ Faulty network devices impact network performance. This can be eliminated throug
 
      With a button to easily add any node to the server list and another button to delete the node from the list of known devices.
 
-     ![Nodes](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/Screenshot%202021-02-24%20at%209.49.44%20AM.png?token=AEZOEVECA72YZUSSEYQGR63AYNJF4)
+     ![Nodes](assets/Screenshot%202021-02-24%20at%209.49.44%20AM.png)
 
 3. Servers - This is the list of nodes that are explicitly marked as servers for actively monitoring. If any of the servers is unable to reach the network or is experiencing a downtime. The administrator of the network will be immediately notified via email.
 
-   ![server](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/Screenshot%202021-02-24%20at%209.53.02%20AM.png?token=AEZOEVHWNOJHO6KITGGMOSLAYNJMA)
+   ![server](assets/Screenshot 2021-02-24 at 9.53.02 AM.png)
 
 4. Notification - This feature allows the admin to add email that should be notified for important alerts. It provides you the list and a field to add new email. Also there is test notification button which sends a test email to all the emails listed.
 
-   ![notification](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/Screenshot%202021-02-24%20at%209.56.13%20AM.png?token=AEZOEVEBDMWDACYG2G7YUILAYNJSO)
+   ![notification](assets/Screenshot%202021-02-24%20at%209.56.13%20AM.png)
 
 ### Requirements
 
@@ -62,13 +62,13 @@ Faulty network devices impact network performance. This can be eliminated throug
 
 ### Network Design
 
-![networkDesign](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/5.jpg?token=AEZOEVEMXWMOQEPFOJUTM7DAYNISK)
+![networkDesign](assets/5.jpg)
 
 All the devices including the client and web application server are connected to tha main router on the same level.
 
 ### FAQ
 
-![faq](https://raw.githubusercontent.com/deepak-pro/drashti/main/assets/Screenshot%202021-02-24%20at%209.57.13%20AM.png?token=AEZOEVEEBTWMSJCYQEHK2MLAYNJ4O)
+![faq](assets/Screenshot%202021-02-24%20at%209.57.13%20AM.png)
 
 
 
