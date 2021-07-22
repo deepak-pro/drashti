@@ -21,7 +21,7 @@ CREATE TABLE nodes(
     status VARCHAR(1) DEFAULT '0'
 );
 
-ALTER TABLE nodes ADD rtt VARCHAR(10) DEFAULT 'I'
+ALTER TABLE nodes ADD rtt VARCHAR(10) DEFAULT 'I' ;
 
 CREATE TABLE logs(
     username VARCHAR(20),
